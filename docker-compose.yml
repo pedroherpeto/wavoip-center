@@ -1,0 +1,43 @@
+services:
+  pabx:
+    build: ./backend
+    container_name: wavoip-pabx
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      HOST: 0.0.0.0
+      LOG_LEVEL: info
+      DATABASE_URL: "file:./data/dev.db"
+      SESSIONS_DIR: "./data/.sessions"
+      WAVOIP_API_BASE_URL: ${WAVOIP_API_BASE_URL:-https://api.wavoip.com}
+      WAVOIP_POLL_INTERVAL_MS: ${WAVOIP_POLL_INTERVAL_MS:-5000}
+      DEFAULT_LOCALE: ${DEFAULT_LOCALE:-pt-BR}
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+    volumes:
+      - pabx_data:/app/data
+      - pabx_uploads:/app/.uploads
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  panel:
+    build: ./frontend
+    container_name: wavoip-panel
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: http://pabx:3001
+    depends_on:
+      - pabx
+    restart: unless-stopped
+
+volumes:
+  pabx_data:
+  pabx_uploads:

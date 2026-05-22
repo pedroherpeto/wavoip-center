@@ -1,0 +1,170 @@
+// Wavoip PABX schema
+// Single-tenant com multiplas sessoes WhatsApp e tokens Wavoip
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Sessao WhatsApp (cada numero conectado via Baileys)
+model Session {
+  id                Int       @id @default(autoincrement())
+  name              String    @unique
+  number            String?
+  status            String    @default("DISCONNECTED") // OPENING | CONNECTED | DISCONNECTED | QRCODE
+  qrcode            String?
+  wavoipTokens      String?   // CSV de tokens Wavoip
+  authPath          String    @unique
+  baileysLib        String    @default("v7")
+  rejectCalls       Boolean   @default(true)
+  callRejectMessage String?
+  welcomeSequence   String?   // JSON array de {type:"text"|"audio"|"image", text?, audioUrl?, imageUrl?, caption?, delayMs?}
+  ivrEnabled        Boolean   @default(false)
+  defaultFlowId     Int?
+  locale            String    @default("pt-BR")
+  isActive          Boolean   @default(true)
+  retries           Int       @default(0)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  calls             Call[]
+  flows             Flow[]
+
+  @@index([status])
+}
+
+// Chamada (incoming/outgoing)
+model Call {
+  id             Int         @id @default(autoincrement())
+  sessionId      Int
+  session        Session     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  direction      String      // "incoming" | "outgoing"
+  fromNumber     String
+  toNumber       String?
+  whatsappCallId String?     @unique
+  wavoipCallId   String?
+  status         String      // ringing|answered|rejected|missed|completed|terminated|in_ivr
+  durationSec    Int?
+  ivrPath        String?     // ex: "1>2>agent:5"
+  ivrState       String?     // JSON com estado atual do IVR
+  metadata       String?     // JSON
+  startedAt      DateTime    @default(now())
+  endedAt        DateTime?
+  events         CallEvent[]
+
+  @@index([sessionId])
+  @@index([fromNumber])
+  @@index([startedAt])
+  @@index([status])
+}
+
+model CallEvent {
+  id        Int      @id @default(autoincrement())
+  callId    Int
+  call      Call     @relation(fields: [callId], references: [id], onDelete: Cascade)
+  type      String   // ring|reject|auto_reply|ivr_input|ivr_response|transfer|hangup
+  payload   String?  // JSON
+  createdAt DateTime @default(now())
+
+  @@index([callId])
+  @@index([type])
+}
+
+// Fluxo IVR/Bot
+model Flow {
+  id          Int      @id @default(autoincrement())
+  name        String
+  sessionId   Int?
+  session     Session? @relation(fields: [sessionId], references: [id])
+  trigger     String   // "incoming_call" | "missed_call" | "outside_hours" | "manual"
+  locale      String   @default("pt-BR")
+  steps       String   // JSON array de IvrStep
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([sessionId])
+  @@index([trigger])
+}
+
+model BusinessHours {
+  id        Int      @id @default(autoincrement())
+  dayOfWeek Int      // 0=Sunday, 6=Saturday
+  openTime  String   // "HH:MM"
+  closeTime String   // "HH:MM"
+  active    Boolean  @default(true)
+}
+
+model Setting {
+  key   String @id
+  value String
+}
+
+// Fila de callbacks (chamadas perdidas + pedidos manuais)
+model Callback {
+  id          Int      @id @default(autoincrement())
+  sessionId   Int
+  phone       String
+  reason      String?  // "missed_call" | "ivr_request" | "manual"
+  status      String   @default("pending") // pending | done | cancelled
+  scheduledAt DateTime?
+  createdAt   DateTime @default(now())
+  completedAt DateTime?
+
+  @@index([status])
+  @@index([sessionId])
+}
+
+// Numeros bloqueados (anti-telemarketing) ou marcados VIP
+model ContactTag {
+  id        Int      @id @default(autoincrement())
+  phone     String   @unique
+  tag       String   // "blocked" | "vip" | "trusted" | custom
+  reason    String?
+  metadata  String?  // JSON
+  createdAt DateTime @default(now())
+
+  @@index([tag])
+}
+
+// Regras de roteamento de chamada (avaliadas no call.incoming)
+model RoutingRule {
+  id        Int      @id @default(autoincrement())
+  name      String
+  priority  Int      @default(100) // menor = mais prioritario
+  condition String   // JSON: {type:"vip"|"repeat"|"ddd"|"blocked", ...}
+  action    String   // JSON: {type:"reject"|"queue"|"transfer"|"vip_alert", ...}
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([active, priority])
+}
+
+// NPS pos-chamada
+model CallRating {
+  id        Int      @id @default(autoincrement())
+  callId    Int      @unique
+  phone     String
+  score     Int      // 0..10
+  comment   String?
+  createdAt DateTime @default(now())
+
+  @@index([phone])
+  @@index([score])
+}
+
+// Resumos IA de chamadas
+model CallSummary {
+  id           Int      @id @default(autoincrement())
+  callId       Int      @unique
+  recordingUrl String?  // URL da gravacao (capturada client-side via MediaRecorder)
+  transcript   String?  // texto completo
+  summary      String?  // 5 bullets
+  language     String?
+  durationMs   Int?
+  cost         Float?   // custo em USD
+  createdAt    DateTime @default(now())
+}

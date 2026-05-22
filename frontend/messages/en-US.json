@@ -1,0 +1,95 @@
+{
+  "common": {
+    "cancel": "Cancel",
+    "accept": "Accept",
+    "reject": "Reject",
+    "hangup": "Hang up",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "save": "Save",
+    "loading": "Loading...",
+    "empty": "Nothing here"
+  },
+  "nav": {
+    "dashboard": "Home",
+    "sessions": "Connections",
+    "calls": "Calls",
+    "messages": "Messages",
+    "callbacks": "Callbacks",
+    "businessHours": "Business hours",
+    "dialer": "Dialer",
+    "settings": "Settings"
+  },
+  "sessions": {
+    "title": "WhatsApp connections",
+    "subtitle": "Manage the numbers connected to the PABX",
+    "new": "New connection",
+    "create": "Create",
+    "name": "Name",
+    "namePlaceholder": "e.g., Sales SP",
+    "wavoipTokens": "Wavoip tokens",
+    "wavoipTokensHint": "Separate multiple tokens with commas",
+    "locale": "Language",
+    "rejectCalls": "Auto-reject incoming calls",
+    "ivrEnabled": "Enable IVR",
+    "callRejectMessage": "Reject message (overrides global)",
+    "status": "Status",
+    "number": "Number",
+    "start": "Connect",
+    "stop": "Disconnect",
+    "delete": "Delete",
+    "scanQr": "Scan the QR with WhatsApp > Linked devices",
+    "save": "Save changes",
+    "saved": "Changes saved",
+    "deleteConfirm": "Delete this connection? Auth state will be removed.",
+    "noSessions": "No connections yet. Create your first one to start.",
+    "connected": "Connected",
+    "disconnected": "Disconnected",
+    "qrcode": "QR Code",
+    "opening": "Opening..."
+  },
+  "dashboard": {
+    "title": "Agent dashboard",
+    "subtitle": "Overview of your calls",
+    "totalCalls": "Calls today",
+    "missedCalls": "Missed",
+    "avgDuration": "Avg duration",
+    "recentMissed": "Recent missed"
+  },
+  "calls": {
+    "history": "Call history",
+    "callback": "Call back",
+    "incoming": "Incoming",
+    "outgoing": "Outgoing",
+    "missed": "Missed",
+    "today": "Today",
+    "yesterday": "Yesterday"
+  },
+  "dialer": {
+    "title": "Dialer",
+    "placeholder": "Type a number",
+    "clear": "Clear"
+  },
+  "agent": {
+    "status": "Status",
+    "available": "Available",
+    "busy": "Busy",
+    "paused": "Paused"
+  },
+  "call": {
+    "incomingTitle": "Incoming call",
+    "activeTitle": "In call",
+    "notes": "Notes",
+    "notesPlaceholder": "Write while you talk..."
+  },
+  "settings": {
+    "title": "Global settings",
+    "subtitle": "Override backend .env values from the UI",
+    "default": "Default (.env)",
+    "value": "Current value",
+    "overridden": "Overridden",
+    "reset": "Reset to default",
+    "save": "Save",
+    "saved": "Settings saved"
+  }
+}

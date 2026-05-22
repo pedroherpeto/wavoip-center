@@ -1,0 +1,12 @@
+node_modules
+dist
+.sessions
+.uploads
+.git
+.env
+.env.local
+*.log
+agent-webphone
+zpro-passaporte
+plan.md
+prisma/dev.db*

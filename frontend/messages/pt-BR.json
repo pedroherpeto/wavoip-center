@@ -1,0 +1,95 @@
+{
+  "common": {
+    "cancel": "Cancelar",
+    "accept": "Atender",
+    "reject": "Recusar",
+    "hangup": "Encerrar",
+    "mute": "Mudo",
+    "unmute": "Tirar mudo",
+    "save": "Salvar",
+    "loading": "Carregando...",
+    "empty": "Nada por aqui"
+  },
+  "nav": {
+    "dashboard": "Início",
+    "sessions": "Conexões",
+    "calls": "Chamadas",
+    "messages": "Mensagens",
+    "callbacks": "Callbacks",
+    "businessHours": "Horários",
+    "dialer": "Discador",
+    "settings": "Ajustes"
+  },
+  "sessions": {
+    "title": "Conexões WhatsApp",
+    "subtitle": "Gerencie os números conectados ao PABX",
+    "new": "Nova conexão",
+    "create": "Criar",
+    "name": "Nome",
+    "namePlaceholder": "ex: Vendas SP",
+    "wavoipTokens": "Tokens Wavoip",
+    "wavoipTokensHint": "Separe múltiplos tokens com vírgula",
+    "locale": "Idioma",
+    "rejectCalls": "Rejeitar chamadas automaticamente",
+    "ivrEnabled": "Habilitar IVR",
+    "callRejectMessage": "Mensagem ao rejeitar (sobrescreve global)",
+    "status": "Status",
+    "number": "Número",
+    "start": "Conectar",
+    "stop": "Desconectar",
+    "delete": "Apagar",
+    "scanQr": "Escaneie o QR com WhatsApp > Aparelhos conectados",
+    "save": "Salvar alterações",
+    "saved": "Alterações salvas",
+    "deleteConfirm": "Apagar esta conexão? A autenticação será removida.",
+    "noSessions": "Nenhuma conexão. Crie sua primeira para começar.",
+    "connected": "Conectado",
+    "disconnected": "Desconectado",
+    "qrcode": "QR Code",
+    "opening": "Abrindo..."
+  },
+  "dashboard": {
+    "title": "Painel do agente",
+    "subtitle": "Visão geral das suas chamadas",
+    "totalCalls": "Chamadas hoje",
+    "missedCalls": "Perdidas",
+    "avgDuration": "Duração média",
+    "recentMissed": "Perdidas recentes"
+  },
+  "calls": {
+    "history": "Histórico de chamadas",
+    "callback": "Ligar de volta",
+    "incoming": "Recebida",
+    "outgoing": "Realizada",
+    "missed": "Perdida",
+    "today": "Hoje",
+    "yesterday": "Ontem"
+  },
+  "dialer": {
+    "title": "Discador",
+    "placeholder": "Digite o número",
+    "clear": "Limpar"
+  },
+  "agent": {
+    "status": "Status",
+    "available": "Disponível",
+    "busy": "Ocupado",
+    "paused": "Em pausa"
+  },
+  "call": {
+    "incomingTitle": "Chamada recebida",
+    "activeTitle": "Em chamada",
+    "notes": "Anotações",
+    "notesPlaceholder": "Escreva enquanto fala..."
+  },
+  "settings": {
+    "title": "Configurações globais",
+    "subtitle": "Sobrescrevem os valores do .env do backend",
+    "default": "Padrão (.env)",
+    "value": "Valor atual",
+    "overridden": "Sobrescrito",
+    "reset": "Resetar para padrão",
+    "save": "Salvar",
+    "saved": "Configurações salvas"
+  }
+}
