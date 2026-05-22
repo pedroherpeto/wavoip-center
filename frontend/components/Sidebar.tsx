@@ -8,7 +8,6 @@ import {
   Phone,
   Settings,
   Menu,
-  PhoneCall,
   Smartphone,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -60,9 +59,11 @@ function NavItems({ onNavigate }: { onNavigate?: () => void }) {
 function Brand() {
   return (
     <div className="flex items-center gap-2 px-2 py-1">
-      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-wavoip-500 text-black">
-        <PhoneCall className="h-5 w-5" />
-      </div>
+      <img
+        src="/wavoip.png"
+        alt="Wavoip"
+        className="h-9 w-9 rounded-xl object-contain"
+      />
       <div className="flex flex-col leading-tight">
         <span className="font-semibold">Wavoip</span>
         <span className="text-xs text-[var(--muted-foreground)]">PABX</span>

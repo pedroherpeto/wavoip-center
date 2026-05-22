@@ -11,6 +11,10 @@ import {
   Smartphone,
   ChevronDown,
   ChevronUp,
+  Eye,
+  EyeOff,
+  Copy,
+  Check,
 } from "lucide-react";
 import {
   fetchSessions,
@@ -39,6 +43,151 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+
+/**
+ * Campo de tokens Wavoip com mascaramento (igual password) e botoes pra
+ * mostrar/ocultar + copiar.
+ *
+ * UUID formato: c93324c8-ff45-4082-97dc-7a49645f89c0
+ * Mascarado: c933....f89c0 (primeiros 4 + last 5)
+ */
+function maskToken(raw: string): string {
+  const trimmed = raw.trim();
+  if (!trimmed) return "";
+  if (trimmed.length <= 12) return "•".repeat(trimmed.length);
+  return `${trimmed.slice(0, 4)}${"•".repeat(8)}${trimmed.slice(-5)}`;
+}
+
+function SecretTokensField({
+  id,
+  value,
+  onChange,
+}: {
+  id: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const [revealed, setRevealed] = React.useState(false);
+  const [copied, setCopied] = React.useState(false);
+
+  const tokens = value
+    .split(",")
+    .map((t) => t.trim())
+    .filter(Boolean);
+
+  async function copyAll() {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {}
+  }
+
+  if (revealed) {
+    return (
+      <div className="flex flex-col gap-2">
+        <div className="flex gap-2">
+          <Textarea
+            id={id}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder="token-1,token-2,..."
+            rows={2}
+            className="font-mono text-xs flex-1"
+          />
+          <div className="flex flex-col gap-1">
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={() => setRevealed(false)}
+              title="Ocultar"
+            >
+              <EyeOff className="h-4 w-4" />
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={copyAll}
+              title="Copiar"
+            >
+              {copied ? (
+                <Check className="h-4 w-4 text-green-400" />
+              ) : (
+                <Copy className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Modo oculto: mostra lista de tokens mascarados (read-only)
+  return (
+    <div className="flex flex-col gap-2">
+      {tokens.length === 0 ? (
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setRevealed(true)}
+            className="flex-1 h-11 rounded-xl border border-dashed border-[var(--border)] px-4 text-sm text-[var(--muted-foreground)] hover:bg-[var(--muted)]/40 text-left"
+          >
+            Nenhum token configurado — clique pra adicionar
+          </button>
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            onClick={() => setRevealed(true)}
+            title="Mostrar / editar"
+          >
+            <Eye className="h-4 w-4" />
+          </Button>
+        </div>
+      ) : (
+        <div className="flex gap-2">
+          <div className="flex-1 flex flex-col gap-1.5">
+            {tokens.map((tk, idx) => (
+              <div
+                key={idx}
+                className="flex items-center gap-2 h-9 rounded-xl border border-[var(--border)] px-3 text-xs font-mono text-[var(--muted-foreground)]"
+              >
+                <span className="h-2 w-2 rounded-full bg-green-400 shrink-0" />
+                <span className="truncate">{maskToken(tk)}</span>
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-col gap-1">
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={() => setRevealed(true)}
+              title="Mostrar / editar"
+            >
+              <Eye className="h-4 w-4" />
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={copyAll}
+              title="Copiar tokens"
+            >
+              {copied ? (
+                <Check className="h-4 w-4 text-green-400" />
+              ) : (
+                <Copy className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 function StatusBadge({ status }: { status: SessionRecord["status"] }) {
   const t = useTranslations("sessions");
@@ -380,15 +529,13 @@ function SessionCard({
 
         <div className="flex flex-col gap-2">
           <Label htmlFor={`tokens-${session.id}`}>{t("wavoipTokens")}</Label>
-          <Textarea
+          <SecretTokensField
             id={`tokens-${session.id}`}
             value={editingTokens}
-            onChange={(e) => {
-              setEditingTokens(e.target.value);
+            onChange={(v) => {
+              setEditingTokens(v);
               setDirty(true);
             }}
-            placeholder="token-1,token-2,..."
-            rows={2}
           />
           <p className="text-xs text-[var(--muted-foreground)]">
             {t("wavoipTokensHint")}

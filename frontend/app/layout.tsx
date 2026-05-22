@@ -3,6 +3,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Sidebar } from "@/components/Sidebar";
+import { Footer } from "@/components/Footer";
 import { WaVoIPWebphone } from "@/components/WaVoIPWebphone";
 import { SocketBridge } from "@/components/SocketBridge";
 import { SendMessageDialog } from "@/components/SendMessageDialog";
@@ -54,8 +55,11 @@ export default async function RootLayout({
           <NextIntlClientProvider locale={locale} messages={messages}>
             <div className="min-h-screen">
               <Sidebar />
-              <main className="lg:ml-64 min-h-screen">
-                <div className="mx-auto max-w-5xl p-4 lg:p-8">{children}</div>
+              <main className="lg:ml-64 min-h-screen flex flex-col">
+                <div className="flex-1 mx-auto w-full max-w-5xl p-4 lg:p-8">
+                  {children}
+                </div>
+                <Footer />
               </main>
               <SocketBridge />
               <AudioMixer />
